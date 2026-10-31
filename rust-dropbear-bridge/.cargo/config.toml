@@ -1,0 +1,11 @@
+# OpenWrt ath79/generic mips_24kc is big-endian soft-float.
+# Do not use rustc's bundled MIPS crt1.o; it is hard-float and SIGILLs on AR9330.
+[target.mips-unknown-linux-musl]
+linker = "mips-openwrt-rust-linker.sh"
+rustflags = [
+    "-C", "link-self-contained=no",
+    "-C", "target-feature=+crt-static",
+    "-C", "target-cpu=mips32r2",
+    "-C", "link-arg=-static",
+    "-C", "link-arg=-no-pie",
+]

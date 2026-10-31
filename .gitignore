@@ -1,0 +1,10 @@
+/dist/
+/upstream-tailscale/
+/upstream-tailscale-rs/
+**/target/
+.env
+scripts/yun.env
+*.authkey
+*.pem
+*.key
+state/

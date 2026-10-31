@@ -1,0 +1,7 @@
+#!/bin/sh
+# Wake the LAN PC from the Yun. Phone apps should: ssh root@<yun> wol
+# (ssh host cmd does not expand shell aliases, so this is a real command.)
+. "$(dirname "$0")/usb-env.sh"
+: "${WOL_IFACE:?set WOL_IFACE in yun.env}"
+: "${WOL_MAC:?set WOL_MAC in yun.env}"
+exec etherwake -i "$WOL_IFACE" "$WOL_MAC"

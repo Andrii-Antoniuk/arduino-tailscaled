@@ -1,0 +1,17 @@
+[package]
+name = "yun-tailssh-bridge"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+publish = false
+
+[dependencies]
+tailscale = { path = "../upstream-tailscale-rs" }
+tokio = { version = "1", default-features = false, features = ["macros", "rt-multi-thread", "net", "io-util"] }
+
+[profile.release]
+codegen-units = 1
+debug = false
+opt-level = "z"
+panic = "abort"
+strip = "symbols"

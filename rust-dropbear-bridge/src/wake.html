@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101014">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Wake PC</title>
+<link rel="manifest" href="/manifest.json">
+<style>
+  :root { color-scheme: dark; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    font: 17px/1.4 system-ui, sans-serif;
+    background: #101014;
+    color: #f4f1ea;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  main { width: min(22rem, 100%); text-align: center; }
+  h1 { font-size: 1.7rem; font-weight: 650; letter-spacing: -0.03em; margin: 0 0 0.35rem; }
+  p { margin: 0 0 1.6rem; color: #b8b3a8; }
+  button {
+    appearance: none;
+    width: 100%;
+    min-height: 7.5rem;
+    border: 0;
+    border-radius: 1.4rem;
+    background: #e8ff6a;
+    color: #14140f;
+    font: inherit;
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    box-shadow: 0 16px 40px rgba(232, 255, 106, 0.18);
+  }
+  button:active { transform: scale(0.98); }
+  button[disabled] { opacity: 0.6; }
+  #status { min-height: 1.5em; margin-top: 1.1rem; color: #d7d2c6; }
+  #status.ok { color: #c6f39a; }
+  #status.err { color: #ff9b8a; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Wake PC</h1>
+  <p>the LAN PC</p>
+  <form action="/wol" method="post">
+    <button type="submit" id="wake">Wake</button>
+  </form>
+  <div id="status" role="status"></div>
+</main>
+<script>
+  const button = document.getElementById("wake");
+  const status = document.getElementById("status");
+  document.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    button.disabled = true;
+    status.className = "";
+    status.textContent = "Sending…";
+    try {
+      const response = await fetch("/wol", { method: "POST" });
+      const text = (await response.text()).trim();
+      status.className = response.ok ? "ok" : "err";
+      status.textContent = text || (response.ok ? "PC wake sent" : "Wake failed");
+    } catch (error) {
+      status.className = "err";
+      status.textContent = "No route. Is Tailscale up?";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
